@@ -65,17 +65,14 @@ class UnreliableCar(Vehicle):
         # occasionally staying in place) -- it just can't break the
         # Vehicle contract.
         roll = random.random()
-        if roll < 0.15:
-            raise RuntimeError(f"{self.name} broke down!")
-        elif roll < 0.30:
-            self.position -= 3  # ran out of gas and rolled back downhill
-        else:
-            self.position += 5
+        if roll < 0.3:
+            return # doesn't move
+        self.position += 5
 
 
 def main():
     vehicles = [SteadyCar("Reliable Rex"), UnreliableCar("Shaky Sam")]
-    Track(length=30).run(vehicles)  # <-- may crash or derail until you fix it
+    Track(length=50).run(vehicles)  # <-- may crash or derail until you fix it
 
 
 if __name__ == "__main__":

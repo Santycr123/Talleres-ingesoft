@@ -23,7 +23,9 @@ Run it to watch the race:
 Check your work:
     pytest tests/test_ex2_ocp.py -v
 """
+
 from engine.track import Track
+import random
 
 
 class Vehicle:
@@ -58,7 +60,7 @@ class Motorcycle(Vehicle):
 
     def move(self) -> None:
         # TODO(OCP): move forward by a varying, sometimes-large amount.
-        raise NotImplementedError("Implement Motorcycle.move()")
+        self.position += random.choice([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
 
 class Bicycle(Vehicle):
@@ -67,11 +69,13 @@ class Bicycle(Vehicle):
     def __init__(self, name: str):
         super().__init__(name)
         # TODO(OCP): add any state you need to track fatigue over time.
+        self._ticks = 0
 
     def move(self) -> None:
         # TODO(OCP): move forward by a shrinking amount as ticks go by
         # (never less than 1).
-        raise NotImplementedError("Implement Bicycle.move()")
+        self._ticks+=1
+        self.position += max(1, 6-self._ticks//2)
 
 
 def main():
@@ -81,7 +85,7 @@ def main():
         Motorcycle("Ghost Rider"),
         Bicycle("Pedal Pete"),
     ]
-    Track(length=35).run(vehicles)
+    Track(length=100).run(vehicles)
 
 
 if __name__ == "__main__":

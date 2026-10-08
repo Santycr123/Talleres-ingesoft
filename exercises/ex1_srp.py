@@ -40,24 +40,35 @@ class Car:
 
     def move(self) -> None:
         self.position += self.speed
-        # TODO(SRP): remove this print -- rendering is Track's job, not Car's.
-        print(f"{self.name} is now at {self.position}m")
-        # TODO(SRP): remove this -- logging is not Car's job either.
-        with open("race_log.txt", "a", encoding="utf-8") as f:
-            f.write(f"{self.name}={self.position}\n")
 
+class RaceLogger:
 
-# TODO(SRP): write a RaceLogger class here (see the docstring above for
-# the exact methods it needs).
+    def __init__(self):
+        self._entries = []
 
+    def record(self, tick, racers) -> None:
+        for racer in racers:
+            self._entries.append(f"tick={tick} {racer.name}={racer.position}m")
+
+    def save(self, path: str = "race_log.txt") -> None:
+        with open(path, "w", encoding="utf-8") as file:
+            file.write("\n".join(self._entries))
+
+    @property
+    def entries(self):
+        return list(self._entries)
 
 def main():
-    cars = [Car("Red", 4), Car("Blue", 5), Car("Green", 3)]
     # TODO(SRP): create a RaceLogger, pass its `record` method as the
     # `on_tick` callback to Track.run(...), and call `logger.save()`
     # after the race finishes.
-    track = Track(length=30)
-    track.run(cars)
+    cars = [Car("Red", 4), Car("Blue", 5), Car("Green", 3)]
+    log = RaceLogger()
+    track = Track(length=50)
+    on_tick=log.record
+    track.run(cars, on_tick=on_tick)
+    log.save()
+    print(f"log entries were saved on race_log.txt")
 
 
 if __name__ == "__main__":
