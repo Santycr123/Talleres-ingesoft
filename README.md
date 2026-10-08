@@ -1,37 +1,21 @@
-🏁 Solución Taller SOLID Race Lab
+#Solución Taller SOLID Race Lab
 
 Ingeniería de Software II — Universidad Nacional de Colombia (2026-2)
+Santiago Cardenas Rodriguez
 
-Este repositorio contiene la solución completa al taller práctico sobre los Principios SOLID, donde cada principio se aplica y valida mediante una simulación de carrera visual en consola y pruebas automáticas en pytest.
+Este repositorio contiene la solución completa al taller práctico sobre los Principios SOLID, donde cada principio se aplica y valida mediante una simulación de carrera visual en consola.
 
-🚀 Cómo Ejecutar el Proyecto
-
-1. Activar el entorno virtual e instalar dependencias
-
-python3 -m venv .venv
-source .venv/bin/activate        # En Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-
-
-2. Ejecutar la demo visual de cada ejercicio
-
-python -m exercises.ex1_srp
-python -m exercises.ex2_ocp
-python -m exercises.ex3_lsp
-python -m exercises.ex4_isp
-python -m exercises.ex5_dip
-
-
-3. Ejecutar la suite de pruebas
-
-# Correr todas las pruebas del taller
+###Para ejecutar todos los test
+```bash
 pytest -v
+```
 
-# Correr las pruebas de un ejercicio individual
+###Para correr las pruebas de un ejercicio individual
+```bash
 pytest tests/test_ex1_srp.py -v
+```
 
-
-🛠️ Resumen de Soluciones y Preguntas de Discusión
+##Resumen de Soluciones y Preguntas de Discusión
 
 1. SRP — Single Responsibility Principle (Principio de Responsabilidad Única)
 
@@ -97,7 +81,7 @@ Preguntas de discusión:
 
 Permite inyectar en las pruebas una lista de competidores simulados junto con una pista configurada sin animación (Track(animate=False, tick_seconds=0)). Esto hace que las pruebas ejecuten la lógica del negocio instantáneamente, sin depender de salidas en la consola ni demoras de tiempo real.
 
-📌 Reflexión Final (Wrap-up)
+Reflexión Final (Wrap-up)
 
 Ejemplo de violación en proyectos previos: En proyectos académicos anteriores (como sistemas de gestión o e-commerce), era común tener controladores o modelos que realizaban consultas a la base de datos, procesaban la lógica de negocio, enviaban correos electrónicos y daban formato a la respuesta HTTP dentro de una sola función (violación masiva de SRP e ISP).
 
