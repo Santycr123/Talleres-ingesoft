@@ -1,101 +1,104 @@
-# SOLID Race Lab
+🏁 Solución Taller SOLID Race Lab
 
-Taller práctico de los principios SOLID — Ingeniería de Software II,
-Universidad Nacional de Colombia.
+Ingeniería de Software II — Universidad Nacional de Colombia (2026-2)
 
-En vez de discutir los principios SOLID solo en teoría, aquí los aplicas
-completando código real de una carrera de vehículos que se anima en la
-consola. Cada ejercicio corresponde a un principio SOLID; cuando lo
-completas correctamente, la carrera de ese ejercicio corre sin errores y
-puedes **verla** moverse en tu terminal.
+Este repositorio contiene la solución completa al taller práctico sobre los Principios SOLID, donde cada principio se aplica y valida mediante una simulación de carrera visual en consola y pruebas automáticas en pytest.
 
-## Instalación
+🚀 Cómo Ejecutar el Proyecto
 
-Requiere Python 3.9+.
+1. Activar el entorno virtual e instalar dependencias
 
-```bash
 python3 -m venv .venv
 source .venv/bin/activate        # En Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-```
 
-## Estructura
 
-```
-engine/            Motor de animación en consola (completo, no lo modifiques)
-  track.py
+2. Ejecutar la demo visual de cada ejercicio
 
-exercises/          Los 5 ejercicios — aquí es donde trabajas
-  ex1_srp.py         Single Responsibility Principle
-  ex2_ocp.py          Open/Closed Principle
-  ex3_lsp.py           Liskov Substitution Principle
-  ex4_isp.py            Interface Segregation Principle
-  ex5_dip.py             Dependency Inversion Principle
+python -m exercises.ex1_srp
+python -m exercises.ex2_ocp
+python -m exercises.ex3_lsp
+python -m exercises.ex4_isp
+python -m exercises.ex5_dip
 
-tests/              Pruebas automáticas que validan cada ejercicio
-```
 
-## Cómo trabajar cada ejercicio
+3. Ejecutar la suite de pruebas
 
-Cada archivo en `exercises/` tiene, en su docstring inicial, el problema
-a resolver y una lista de tareas puntuales (`TODO(SRP)`, `TODO(OCP)`,
-etc. marcan exactamente dónde completar código).
+# Correr todas las pruebas del taller
+pytest -v
 
-1. Lee el docstring del ejercicio (p. ej. `exercises/ex1_srp.py`).
-2. Completa los `TODO`.
-3. Corre la demo visual para verla en la consola:
+# Correr las pruebas de un ejercicio individual
+pytest tests/test_ex1_srp.py -v
 
-   ```bash
-   python -m exercises.ex1_srp
-   python -m exercises.ex2_ocp
-   python -m exercises.ex3_lsp
-   python -m exercises.ex4_isp
-   python -m exercises.ex5_dip
-   ```
 
-4. Corre las pruebas de ese ejercicio para confirmar que quedó bien:
+🛠️ Resumen de Soluciones y Preguntas de Discusión
 
-   ```bash
-   pytest tests/test_ex1_srp.py -v
-   ```
+1. SRP — Single Responsibility Principle (Principio de Responsabilidad Única)
 
-   O todas a la vez:
+Solución aplicada: Se removieron del método Car.move() las responsabilidades de impresión en consola y escritura en disco. Se creó la clase RaceLogger, encargada exclusivamente de registrar el historial por tick y guardarlo en un archivo (race_log.txt).
 
-   ```bash
-   pytest -v
-   ```
+Preguntas de discusión:
 
-Un ejercicio está resuelto cuando sus pruebas pasan en verde **y** la
-demo corre sin errores (sin excepciones, sin comportamiento raro).
+¿Por qué es mejor que Car no sepa nada sobre logging o impresión?
 
-## Los 5 ejercicios
+Porque Car ahora tiene una única razón para cambiar: modificar el estado interno o la lógica de movimiento del vehículo. Si se cambia el formato de renderizado o el almacenamiento de datos, no es necesario tocar la clase Car.
 
-| # | Principio | Qué debes hacer |
-|---|-----------|------------------|
-| 1 | SRP — Single Responsibility | Separar la lógica de movimiento (`Car`) del registro de resultados (`RaceLogger`) |
-| 2 | OCP — Open/Closed | Agregar `Motorcycle` y `Bicycle` **sin** tocar `Vehicle`, `Car`, `Truck` ni `Track` |
-| 3 | LSP — Liskov Substitution | Rediseñar `UnreliableCar` para que nunca rompa el contrato de `Vehicle` (nunca retrocede, nunca lanza excepción) |
-| 4 | ISP — Interface Segregation | Partir una interfaz gorda (`VehicleActions`) en interfaces pequeñas y agregar `Drone` |
-| 5 | DIP — Dependency Inversion | Hacer que `Race` reciba sus vehículos desde afuera en vez de construirlos él mismo |
+¿Qué se rompería primero si el profesor pide guardar los resultados en JSON?
 
-## Material de apoyo
+Si Car manejara el logging, habría que modificar el método move() de Car (y de cualquier otra clase de vehículo futura). Con el diseño refactorizado, solo se modifica el método save() de RaceLogger, dejando intactos todos los vehículos.
 
-En `docs/` encuentras:
+2. OCP — Open/Closed Principle (Principio Abierto/Cerrado)
 
-- **Taller-SOLID-Enunciado.pdf** — la guía del taller para usar en clase.
-- **Material-Estudio-SOLID.pdf** — teoría de cada principio con ejemplos
-  tomados de este mismo proyecto, para repasar antes o después del taller.
+Solución aplicada: Se añadieron las clases Motorcycle (movimiento rápido pero variable mediante random.choice) y Bicycle (movimiento que disminuye gradualmente por fatiga sin bajar de 1). Se logró mediante herencia de Vehicle sin modificar las clases base Vehicle, Car, Truck o Track.
 
-## Para el profesor
+Preguntas de discusión:
 
-Este repositorio tiene dos ramas:
+Si quisieras editar Vehicle o Track para completar este ejercicio, ¿qué diría de tu diseño?
 
-- `main` — la versión que reciben los estudiantes (con los `TODO`).
-- `solution` — la solución de referencia completa, usada para validar
-  que las pruebas realmente miden lo correcto. **No la compartas con los
-  estudiantes** (o bórrala/oculta antes de repartir el repositorio).
+Indicaría un diseño rígido y mal abstraído (violación de OCP). Un diseño bien orientado a objetos permite extender el comportamiento del sistema simplemente agregando nuevas subclases polimórficas sin necesidad de alterar el código existente ya probado y funcional.
 
-```bash
-git checkout solution   # ver / correr la solución completa
-git checkout main       # volver a la versión de los estudiantes
-```
+3. LSP — Liskov Substitution Principle (Principio de Sustitución de Liskov)
+
+Solución aplicada: Se rediseñó UnreliableCar para que la "falta de confiabilidad" no rompa el contrato de Vehicle. Ahora, si el auto falla (30% de probabilidad), simplemente se queda varado en el turno (return, avanza 0m) en lugar de lanzar excepciones o reducir su posición.
+
+Preguntas de discusión:
+
+¿Qué habrías tenido que agregar a Track si NO hubieras arreglado UnreliableCar?
+
+Se habrían tenido que añadir bloques try/except para prevenir que la carrera se detenga por excepciones, y condicionales defensivos para corregir o validar que la posición de un vehículo nunca disminuya.
+
+¿Por qué es mejor arreglar la subclase?
+
+Porque la clase base y el cliente (Track) deben poder confiar en el contrato de la abstracción. Arreglar la subclase garantiza que sea 100% sustituible sin ensuciar el motor de la carrera con lógica condicional especial.
+
+4. ISP — Interface Segregation Principle (Principio de Segregación de Interfaces)
+
+Solución aplicada: Se dividió la interfaz pesada VehicleActions en cuatro interfaces independientes con un único método abstracto: Movable, Refuelable, Flyable y Pedalable. GasCar implementa Movable + Refuelable, Bicycle implementa Movable + Pedalable, y la nueva clase Drone implementa Movable + Flyable.
+
+Preguntas de discusión:
+
+¿Qué interfaz(es) necesitaría un futuro Submarine o Airplane?
+
+Airplane: Implementaría Movable, Flyable y Refuelable.
+
+Submarine: Implementaría Movable, Refuelable y posiblemente una nueva interfaz pequeña como Submersible.
+
+¿Agregar una de estas clases requiere tocar alguna clase de vehículo existente?
+
+No. Al tener interfaces segregadas, cada clase nueva solo implementa los comportamientos que necesita sin afectar a las demás clases del sistema.
+
+5. DIP — Dependency Inversion Principle (Principio de Inversión de Dependencias)
+
+Solución aplicada: Se refactorizó la clase Race para recibir la lista de competidores (racers) e instancias de Track mediante inyección de dependencias en su constructor __init__. Se agregó la clase RocketSled y se ejecutaron dos listas de competidores distintas en main() sin modificar el código de Race.
+
+Preguntas de discusión:
+
+¿Cómo facilita la inyección de dependencias las pruebas unitarias de Race sin una animación real en terminal?
+
+Permite inyectar en las pruebas una lista de competidores simulados junto con una pista configurada sin animación (Track(animate=False, tick_seconds=0)). Esto hace que las pruebas ejecuten la lógica del negocio instantáneamente, sin depender de salidas en la consola ni demoras de tiempo real.
+
+📌 Reflexión Final (Wrap-up)
+
+Ejemplo de violación en proyectos previos: En proyectos académicos anteriores (como sistemas de gestión o e-commerce), era común tener controladores o modelos que realizaban consultas a la base de datos, procesaban la lógica de negocio, enviaban correos electrónicos y daban formato a la respuesta HTTP dentro de una sola función (violación masiva de SRP e ISP).
+
+Cambio propuesto: Separar el envío de correos en un servicio de notificaciones independiente e inyectar dicho servicio mediante interfaces (DIP), lo que facilitaría hacer pruebas unitarias aisladas sin enviar correos reales durante los tests.
